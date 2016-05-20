@@ -19,10 +19,29 @@ $(function() {
             <input name="utf8" type="hidden" value="&#x2713;" />
             <label for="band_name">Name</label>
             <input type="text" name="band[name]" id="band_name" />
-            <input type="submit" name="commit" value="Create Band" />
+            <input type="submit" name="commit" value="Add Band" />
           </form>
         </div>
+      );
+    }
+  }
 
+  class Band extends React.Component {
+    render() {
+      return (
+        <li>{this.props.name}</li>
+      );
+    }
+  }
+
+  class BandsList extends React.Component {
+    render() {
+      return (
+        <ul>
+        <Band name="Bastille" />
+        <Band name="Frank Turner" />
+        <Band name="The 1975" />
+        </ul>
       );
     }
   }
@@ -33,6 +52,7 @@ $(function() {
         <div>
           <Title />
           <BandsForm />
+          <BandsList />
         </div>
       );
     }
