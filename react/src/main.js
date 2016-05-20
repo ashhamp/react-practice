@@ -3,28 +3,27 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 $(function() {
-  class Title extends React.Component {
+  class BandForm extends React.Component {
     render() {
       return (
-        <h1>Bands I like via React</h1>
-      );
-    }
-  }
-
-  class BandsForm extends React.Component {
-    render() {
-      return (
-        <div class="band-form row small-12 medium-6 columns end">
-          <form class="new_band" id="new_band" action="/bands" accept-charset="UTF-8" method="post">
-            <input name="utf8" type="hidden" value="&#x2713;" />
-            <label for="band_name">Name</label>
-            <input type="text" name="band[name]" id="band_name" />
+        <div className="band-form row small-12 medium-6 columns end">
+          <form className="new_band" onSubmit={this._handleSubmit.bind(this)}>
+            <input placeholder="Band Name" ref={(input) => this._name = input} />
             <input type="submit" name="commit" value="Add Band" />
           </form>
         </div>
       );
     }
+    _handleSubmit(event) {
+      event.preventDefault();
+
+      let name = this._name;
+
+      this.props.addBand(name.value);
+    }
   }
+
+
 
   class Band extends React.Component {
     render() {
@@ -34,31 +33,65 @@ $(function() {
     }
   }
 
-  class BandsList extends React.Component {
-    render() {
-      return (
-        <ul>
-        <Band name="Bastille" />
-        <Band name="Frank Turner" />
-        <Band name="The 1975" />
-        </ul>
-      );
-    }
-  }
 
-  class BandsBox extends React.Component {
+  class BandBox extends React.Component {
+
+    constructor() {
+      super();
+
+      this.state = {
+        bands: [
+          { id: 1, name: "Bastille" },
+          { id: 2, name: "The 1975" }
+        ]
+      };
+    }
+
     render() {
+      const bands = this._getBands();
       return (
-        <div>
-          <Title />
-          <BandsForm />
-          <BandsList />
+        <div className="band-box">
+          <h1>Bands I like. Powered by React</h1>
+          <BandForm addBand={this._addBand.bind(this)} />
+          <div>
+            <h3>{this._getBandsTitle(bands.length)}</h3>
+          </div>
+          <div>
+            <ul>
+              {bands}
+            </ul>
+          </div>
         </div>
       );
+    }
+
+    _getBandsTitle(bandCount) {
+      if (bandCount === 0) {
+        return "I don't like any bands yet";
+      } else if (bandCount === 1) {
+        return 'I like 1 band';
+      } else {
+        return `I like ${bandCount} bands`;
+      }
+    }
+
+    _addBand(name) {
+      const band = {
+        id: this.state.bands.length + 1,
+        name
+      };
+      this.setState({ bands: this.state.bands.concat([band]) });
+    }
+
+    _getBands() {
+
+      return this.state.bands.map((band) => {
+        return (<Band name={band.name} key={band.id}/>)
+      });
     }
   }
 
   ReactDOM.render(
-    <BandsBox />, document.getElementById('all-bands')
+    <BandBox />, document.getElementById('all-bands')
   );
 });
