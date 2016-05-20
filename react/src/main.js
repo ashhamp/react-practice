@@ -19,7 +19,7 @@ $(function() {
 
       let name = this._name;
 
-      if (!this._name.value.strip) {
+      if (!this._name.value.trim()) {
         alert("Please enter a band name");
         return
       }
