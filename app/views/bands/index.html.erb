@@ -1,0 +1,23 @@
+<div class="all-bands">
+  <h1>Bands I like:</h1>
+  <div class="flash-messages">
+    <% flash.each do |name, msg| %>
+      <% if msg.is_a?(String) %>
+        <%= content_tag :div, msg, :class => "flash_#{name}" %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="band-form row small-12 medium-6 columns end">
+    <%= render 'form' %>
+  </div>
+  <div class="band-list row">
+    <ul>
+      <% @bands.each do |band| %>
+        <li>
+          <%= band.name %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+</div>
