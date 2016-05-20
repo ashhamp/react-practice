@@ -19,6 +19,11 @@ $(function() {
 
       let name = this._name;
 
+      if (!this._name.value.strip) {
+        alert("Please enter a band name");
+        return
+      }
+
       this.props.addBand(name.value);
     }
   }
