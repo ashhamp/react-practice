@@ -45,11 +45,12 @@ $(function() {
       super();
 
       this.state = {
-        bands: [
-          { id: 1, name: "Bastille" },
-          { id: 2, name: "The 1975" }
-        ]
+        bands: []
       };
+    }
+
+    componentWillMount() {
+      this._fetchBands();
     }
 
     render() {
@@ -68,6 +69,27 @@ $(function() {
           </div>
         </div>
       );
+    }
+
+    componentDidMount() {
+      this._timer = setInterval(
+        () => this._fetchBands(),
+        5000
+      );
+    }
+
+    componentWillUnmount() {
+      clearInterval(this._timer);
+    }
+
+    _fetchBands() {
+      $.ajax({
+        method: 'GET',
+        url: '/api/bands',
+        success: (bands) => {
+          this.setState({ bands })
+        }
+      });
     }
 
     _getBandsTitle(bandCount) {
