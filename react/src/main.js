@@ -33,8 +33,20 @@ $(function() {
   class Band extends React.Component {
     render() {
       return (
-        <li>{this.props.name}</li>
+        <li>
+          {this.props.band.name}
+          <a href="#" onClick={this._handleDelete.bind(this)}>
+            Delete
+          </a>
+        </li>
       );
+    }
+
+    _handleDelete(event) {
+      event.preventDefault();
+      if (confirm('Are you sure?')) {
+        this.props.onDelete(this.props.band);
+      }
     }
   }
 
@@ -55,6 +67,7 @@ $(function() {
 
     render() {
       const bands = this._getBands();
+
       return (
         <div className="band-box">
           <h1>Bands I like. Powered by React</h1>
@@ -111,10 +124,27 @@ $(function() {
     }
 
     _getBands() {
-
       return this.state.bands.map((band) => {
-        return (<Band name={band.name} key={band.id}/>)
+        return (
+          <Band
+            key={band.id}
+            band={band}
+            onDelete={this._deleteBand.bind(this)} />
+        );
       });
+    }
+
+    _deleteBand(band) {
+      $.ajax({
+        method: 'DELETE',
+        url: `/api/bands/${band.id}`
+      });
+
+      const bands = [...this.state.bands];
+      const bandIndex = bands.indexOf(band);
+      bands.splice(bandIndex, 1);
+
+      this.setState({ bands });
     }
   }
 
