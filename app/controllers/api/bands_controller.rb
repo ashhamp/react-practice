@@ -18,6 +18,16 @@ class Api::BandsController < ApplicationController
     end
   end
 
+  def destroy
+    @band = Band.find(params[:id])
+
+    if @band.destroy!
+      render json: { status: 200 }
+    else
+      render json: {status: 500, message: "Band not found"}
+    end
+  end
+
   private
 
   def band_params
