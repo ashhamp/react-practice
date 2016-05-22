@@ -6,15 +6,12 @@ class Api::BandsController < ApplicationController
   end
 
   def create
-    @bands = Band.all
     @band = Band.new(band_params)
 
     if @band.save
-      flash[:notice] = "Band saved successfully!"
-      redirect_to bands_path
+      render json: @band
     else
-      flash[:error] = @band.errors.full_messages.join('. ')
-      render :index
+      render json: { status: 500, message: "Band not saved" }
     end
   end
 

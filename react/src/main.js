@@ -35,6 +35,7 @@ $(function() {
       return (
         <li>
           {this.props.band.name}
+
           <a href="#" onClick={this._handleDelete.bind(this)}>
             Delete
           </a>
@@ -116,11 +117,16 @@ $(function() {
     }
 
     _addBand(name) {
-      const band = {
-        id: this.state.bands.length + 1,
-        name
-      };
-      this.setState({ bands: this.state.bands.concat([band]) });
+      const band = { name };
+
+      $.ajax({
+        method: 'POST',
+        url: '/api/bands',
+        data: { band },
+        success:(newBand => {
+          this.setState({ bands: this.state.bands.concat([newBand]) });
+        });
+      });
     }
 
     _getBands() {
