@@ -25,6 +25,7 @@ $(function() {
       }
 
       this.props.addBand(name.value);
+      $(this._name).val('');
     }
   }
 
@@ -33,21 +34,57 @@ $(function() {
   class Band extends React.Component {
     render() {
       return (
-        <li>
-          {this.props.band.name}
-
-          <a href="#" onClick={this._handleDelete.bind(this)}>
-            Delete
-          </a>
-        </li>
+        <div className="small-12 medium-6 large-3 columns end">
+          <p className="no-bottom-margin">
+            {this.props.band.name}
+          </p>
+          <p>
+            <RemoveBandConfirmation onDelete={this._handleDelete.bind(this)} />
+          </p>
+        </div>
       );
     }
 
     _handleDelete(event) {
-      event.preventDefault();
-      if (confirm('Are you sure?')) {
-        this.props.onDelete(this.props.band);
+      this.props.onDelete(this.props.band);
+    }
+  }
+
+  class RemoveBandConfirmation extends React.Component {
+    constructor() {
+      super();
+      this.state = {
+        showConfirm: false
+      };
+    }
+
+    render() {
+      let confirmNode;
+      if (this.state.showConfirm) {
+        return (
+          <span>
+            <a href="" onClick={this._confirmDelete.bind(this)}>Yes </a> - or - <a href="" onClick={this._toggleConfirmMessage.bind(this)}> No</a>
+          </span>
+        );
+      } else {
+        confirmNode = <a href="" onClick={this._toggleConfirmMessage.bind(this)}>Delete band?</a>;
       }
+        return (
+          <span>{confirmNode}</span>
+      );
+    }
+
+    _toggleConfirmMessage(e) {
+      e.preventDefault();
+
+      this.setState({
+        showConfirm: !this.state.showConfirm
+      });
+    }
+
+    _confirmDelete(e) {
+      e.preventDefault();
+      this.props.onDelete();
     }
   }
 
@@ -77,9 +114,7 @@ $(function() {
             <h3>{this._getBandsTitle(bands.length)}</h3>
           </div>
           <div>
-            <ul>
-              {bands}
-            </ul>
+            {bands}
           </div>
         </div>
       );
@@ -125,7 +160,7 @@ $(function() {
         data: { band },
         success:(newBand => {
           this.setState({ bands: this.state.bands.concat([newBand]) });
-        });
+        })
       });
     }
 
@@ -136,11 +171,14 @@ $(function() {
             key={band.id}
             band={band}
             onDelete={this._deleteBand.bind(this)} />
+
         );
       });
+
     }
 
     _deleteBand(band) {
+
       $.ajax({
         method: 'DELETE',
         url: `/api/bands/${band.id}`
@@ -148,6 +186,7 @@ $(function() {
 
       const bands = [...this.state.bands];
       const bandIndex = bands.indexOf(band);
+
       bands.splice(bandIndex, 1);
 
       this.setState({ bands });
