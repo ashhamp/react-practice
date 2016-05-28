@@ -1,1 +1,1 @@
-***React Practice with a Rails app
+###React Practice with a Rails app
